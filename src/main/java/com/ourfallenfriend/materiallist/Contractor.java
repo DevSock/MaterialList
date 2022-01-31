@@ -15,9 +15,11 @@ import java.util.logging.Level;
 
 public class Contractor {
     private static final Contractor instance;
+    private final Messenger messenger;
     private final Hashtable<UUID, MaterialList> contracts = new Hashtable<>();
 
     private Contractor() {
+        messenger = Messenger.getInstance();
         Main.getInstance().getLogger().log(Level.INFO, "Material List Manager Instantiated.");
     }
 
@@ -49,14 +51,14 @@ public class Contractor {
         assert agent != null;
 
         if(force) {
-            Messenger.dispatch(agent, MessageType.SUCCESS, "Your block interactions are now being recorded!");
-            Messenger.dispatch(agent, MessageType.TIP, "To end your contract, use /MaterialList <Start / Stop>");
+            messenger.sendMessage(agent, MessageType.SUCCESS, "Your block interactions are now being recorded!");
+            messenger.sendMessage(agent, MessageType.TIP, "To end your contract, use /MaterialList <Start / Stop>");
             addContract(agentID, new MaterialList());
         }else if(hasContract(agentID)) {
-            Messenger.dispatch(agent, MessageType.FAILURE, "You've attempted to enter a material list contract while already contracted!");
+            messenger.sendMessage(agent, MessageType.FAILURE, "You've attempted to enter a material list contract while already contracted!");
         }else {
-            Messenger.dispatch(agent, MessageType.SUCCESS, "Your block interactions are now being recorded!");
-            Messenger.dispatch(agent, MessageType.TIP, "To end your contract, use /MaterialList <Start / Stop>");
+            messenger.sendMessage(agent, MessageType.SUCCESS, "Your block interactions are now being recorded!");
+            messenger.sendMessage(agent, MessageType.TIP, "To end your contract, use /MaterialList <Start / Stop>");
             addContract(agentID, new MaterialList());
         }
     }
@@ -66,7 +68,7 @@ public class Contractor {
         Player agent = Bukkit.getPlayer(agentID);
         assert agent != null;
 
-        Messenger.dispatch(agent, MessageType.INFO, "Your material list has been submitted for completion.");
+        messenger.sendMessage(agent, MessageType.INFO, "Your material list has been submitted for completion.");
 
         try {
             AsyncHttpClientExchange.doRequest(agentID, materialList);
@@ -79,8 +81,8 @@ public class Contractor {
         Player agent = Bukkit.getPlayer(agentID);
         assert agent != null;
 
-        Messenger.dispatch(agent, MessageType.SUCCESS, "Your contract has been completed, here's your URL.");
-        Messenger.dispatch(agent, MessageType.INFO, URL);
+        messenger.sendMessage(agent, MessageType.SUCCESS, "Your contract has been completed, here's your URL.");
+        messenger.sendMessage(agent, MessageType.INFO, URL);
         voidContract(agentID);
     }
 

@@ -19,10 +19,11 @@ public class MaterialListCommand implements CommandExecutor {
             sender.sendMessage(Component.text("This command is only available to players."));
             return true;
         }
+        Messenger messenger = Messenger.getInstance();
 
         if(args.length < 1) {
-            Messenger.dispatch(player, MessageType.FAILURE, "Please make sure you specify whether you'd like to start or stop your material list.");
-            Messenger.dispatch(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
+            messenger.sendMessage(player, MessageType.FAILURE, "Please make sure you specify whether you'd like to start or stop your material list.");
+            messenger.sendMessage(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
         }else {
             UUID agentID = player.getUniqueId();
             Contractor contractor = Contractor.getInstance();
@@ -38,15 +39,15 @@ public class MaterialListCommand implements CommandExecutor {
                 }
                 case "stop" -> {
                     if (!(contractor.hasContract(agentID))) {
-                        Messenger.dispatch(player, MessageType.FAILURE, "You're not currently making a material list.");
-                        Messenger.dispatch(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
+                        messenger.sendMessage(player, MessageType.FAILURE, "You're not currently making a material list.");
+                        messenger.sendMessage(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
                         break;
                     }
                     contractor.submitContract(agentID);
                 }
                 default -> {
-                    Messenger.dispatch(player, MessageType.FAILURE, "Unrecognized command option, please ensure you're using the command correctly.");
-                    Messenger.dispatch(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
+                    messenger.sendMessage(player, MessageType.FAILURE, "Unrecognized command option, please ensure you're using the command correctly.");
+                    messenger.sendMessage(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
                 }
             }
         }

@@ -47,7 +47,7 @@ public class AsyncHttpClientExchange {
                         Player player = Bukkit.getPlayer(responseReceiver);
                         if(Objects.isNull(player)) return;
 
-                        Messenger.dispatch(player, MessageType.WARN, "Couldn't connect to the external server. Please report this to your system administrator.");
+                        Messenger.getInstance().sendMessage(player, MessageType.WARN, "Couldn't connect to the external server. Please report this to your system administrator.");
                         Contractor.getInstance().voidContract(responseReceiver);
                     }
                 });
