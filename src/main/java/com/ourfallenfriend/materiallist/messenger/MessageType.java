@@ -2,6 +2,7 @@ package com.ourfallenfriend.materiallist.messenger;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public enum MessageType {
     SUCCESS(Component.text("Success"), TextColor.color(156, 204, 101)),
@@ -26,12 +27,13 @@ public enum MessageType {
 
     public Component getPrefixComplete() {
         Component coloredAddition = prefixAddition.color(messageColor);
-
-        return MATERIAL_LIST_PREFIX_STARTING_BRACKET
+        Component undecoratedPrefix = MATERIAL_LIST_PREFIX_STARTING_BRACKET
                 .append(MATERIAL_LIST_PREFIX)
                 .append(Component.text(" "))
                 .append(coloredAddition)
                 .append(MATERIAL_LIST_PREFIX_ENDING_BRACKET);
+
+        return undecoratedPrefix.decorate(TextDecoration.BOLD);
     }
 
     public TextColor getMessageColor() {
