@@ -48,7 +48,7 @@ public class AsyncHttpClientExchange {
                         Player player = Bukkit.getPlayer(responseReceiver);
                         if(Objects.isNull(player)) return;
 
-                        Messenger.getInstance().sendMessage(player, BakedMessage.SERVER_CONNECTION_FAILED);
+                        Messenger.getInstance().sendMessage(player, true, BakedMessage.SERVER_CONNECTION_FAILED);
                         Contractor.getInstance().voidContract(responseReceiver);
                     }
                 });

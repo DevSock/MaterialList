@@ -27,20 +27,35 @@ public class Messenger {
         return instance;
     }
 
-    public void sendMessage(Player receiver, MessageType messageType, String message) {
+    public void sendMessage(Player receiver, MessageType messageType, String message, Boolean shouldLog){
         boolean wasSuccessful = dispatch(receiver, messageType, message);
-        if(!wasSuccessful) {
-            logger.log(Level.WARNING, "Attempted to dispatch message to null player!");
+        if(shouldLog) {
+            logger.log(Level.INFO, buildCompleteMessage(messageType, message).toString());
+            if(!wasSuccessful) {
+                logger.log(Level.WARNING, "Recipient of logged message was null, and message was not delivered.");
+            }
         }
     }
 
-    public void sendMessage(Player receiver, BakedMessage bakedMessage) {
-    sendMessage(receiver, bakedMessage.getMessageType(), bakedMessage.getMessage());
+    public void sendMessage(Player receiver, MessageType messageType, String message) {
+        sendMessage(receiver, messageType, message, false);
     }
 
-    public void sendMessage(Player receiver, BakedMessage... bakedMessage) {
+    public void sendMessage(Player receiver, Boolean shouldLog, BakedMessage bakedMessage) {
+        sendMessage(receiver, bakedMessage.getMessageType(), bakedMessage.getMessage(), shouldLog);
+    }
+
+    public void sendMessage(Player receiver, BakedMessage bakedMessage) {
+        sendMessage(receiver, false, bakedMessage);
+    }
+
+    public void sendMessage(Player receiver, boolean shouldLog, BakedMessage... bakedMessage) {
         Stream<BakedMessage> stream = Stream.of(bakedMessage);
-        stream.forEach(message -> sendMessage(receiver, message));
+        stream.forEach(message -> sendMessage(receiver, shouldLog, message));
+    }
+
+    public void sendMessage(Player receiver, BakedMessage... bakedMessages) {
+        sendMessage(receiver, false, bakedMessages);
     }
 
     private boolean dispatch(Player receiver, MessageType messageType, String message) {
@@ -50,7 +65,7 @@ public class Messenger {
         return true;
     }
 
-    public Component buildCompleteMessage(MessageType mT, String msg) {
+    private Component buildCompleteMessage(MessageType mT, String msg) {
         Component prefix = mT.getPrefixComplete();
         Component convertedMessage = Component.text(msg).color(mT.getMessageColor());
         return prefix.append(Component.text(" ")).append(convertedMessage);
