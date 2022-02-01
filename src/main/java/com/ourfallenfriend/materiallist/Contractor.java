@@ -1,6 +1,7 @@
 package com.ourfallenfriend.materiallist;
 
 import com.ourfallenfriend.materiallist.http.AsyncHttpClientExchange;
+import com.ourfallenfriend.materiallist.messenger.BakedMessage;
 import com.ourfallenfriend.materiallist.messenger.MessageType;
 import com.ourfallenfriend.materiallist.messenger.Messenger;
 import org.bukkit.Bukkit;
@@ -51,14 +52,12 @@ public class Contractor {
         assert agent != null;
 
         if(force) {
-            messenger.sendMessage(agent, MessageType.SUCCESS, "Your block interactions are now being recorded!");
-            messenger.sendMessage(agent, MessageType.TIP, "To end your contract, use /MaterialList <Start / Stop>");
+            messenger.sendMessage(agent, BakedMessage.CONTRACT_STARTED, BakedMessage.CONTRACT_HOWTO_END);
             addContract(agentID, new MaterialList());
         }else if(hasContract(agentID)) {
-            messenger.sendMessage(agent, MessageType.FAILURE, "You've attempted to enter a material list contract while already contracted!");
+            messenger.sendMessage(agent, BakedMessage.ALREADY_CONTRACTED, BakedMessage.CONTRACT_HOWTO_END);
         }else {
-            messenger.sendMessage(agent, MessageType.SUCCESS, "Your block interactions are now being recorded!");
-            messenger.sendMessage(agent, MessageType.TIP, "To end your contract, use /MaterialList <Start / Stop>");
+            messenger.sendMessage(agent, BakedMessage.CONTRACT_STARTED, BakedMessage.CONTRACT_HOWTO_END);
             addContract(agentID, new MaterialList());
         }
     }
@@ -68,7 +67,7 @@ public class Contractor {
         Player agent = Bukkit.getPlayer(agentID);
         assert agent != null;
 
-        messenger.sendMessage(agent, MessageType.INFO, "Your material list has been submitted for completion.");
+        messenger.sendMessage(agent, BakedMessage.CONTRACT_SUBMITTED);
 
         try {
             AsyncHttpClientExchange.doRequest(agentID, materialList);
@@ -79,9 +78,8 @@ public class Contractor {
 
     public void completeContract(UUID agentID, String URL) {
         Player agent = Bukkit.getPlayer(agentID);
-        assert agent != null;
 
-        messenger.sendMessage(agent, MessageType.SUCCESS, "Your contract has been completed, here's your URL.");
+        messenger.sendMessage(agent, BakedMessage.CONTRACT_ENDED);
         messenger.sendMessage(agent, MessageType.INFO, URL);
         voidContract(agentID);
     }

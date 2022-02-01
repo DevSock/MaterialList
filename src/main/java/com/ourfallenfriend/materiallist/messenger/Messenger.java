@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 
 public class Messenger {
@@ -33,6 +34,15 @@ public class Messenger {
         }
     }
 
+    public void sendMessage(Player receiver, BakedMessage bakedMessage) {
+    sendMessage(receiver, bakedMessage.getMessageType(), bakedMessage.getMessage());
+    }
+
+    public void sendMessage(Player receiver, BakedMessage... bakedMessage) {
+        Stream<BakedMessage> stream = Stream.of(bakedMessage);
+        stream.forEach(message -> sendMessage(receiver, message));
+    }
+
     private boolean dispatch(Player receiver, MessageType messageType, String message) {
         if(Objects.isNull(receiver)) return false;
         Component completedMessage = buildCompleteMessage(messageType, message);
@@ -40,7 +50,7 @@ public class Messenger {
         return true;
     }
 
-    private Component buildCompleteMessage(MessageType mT, String msg) {
+    public Component buildCompleteMessage(MessageType mT, String msg) {
         Component prefix = mT.getPrefixComplete();
         Component convertedMessage = Component.text(msg).color(mT.getMessageColor());
         return prefix.append(Component.text(" ")).append(convertedMessage);

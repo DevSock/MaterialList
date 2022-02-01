@@ -1,7 +1,7 @@
 package com.ourfallenfriend.materiallist.commands;
 
 import com.ourfallenfriend.materiallist.Contractor;
-import com.ourfallenfriend.materiallist.messenger.MessageType;
+import com.ourfallenfriend.materiallist.messenger.BakedMessage;
 import com.ourfallenfriend.materiallist.messenger.Messenger;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -22,8 +22,7 @@ public class MaterialListCommand implements CommandExecutor {
         Messenger messenger = Messenger.getInstance();
 
         if(args.length < 1) {
-            messenger.sendMessage(player, MessageType.FAILURE, "Please make sure you specify whether you'd like to start or stop your material list.");
-            messenger.sendMessage(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
+            messenger.sendMessage(player, BakedMessage.WRONG_ARGS, BakedMessage.COMMAND_USAGE);
         }else {
             UUID agentID = player.getUniqueId();
             Contractor contractor = Contractor.getInstance();
@@ -39,16 +38,12 @@ public class MaterialListCommand implements CommandExecutor {
                 }
                 case "stop" -> {
                     if (!(contractor.hasContract(agentID))) {
-                        messenger.sendMessage(player, MessageType.FAILURE, "You're not currently making a material list.");
-                        messenger.sendMessage(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
+                        messenger.sendMessage(player, BakedMessage.NOT_CONTRACTED, BakedMessage.COMMAND_USAGE);
                         break;
                     }
                     contractor.submitContract(agentID);
                 }
-                default -> {
-                    messenger.sendMessage(player, MessageType.FAILURE, "Unrecognized command option, please ensure you're using the command correctly.");
-                    messenger.sendMessage(player, MessageType.INFO,"/MaterialList *<Start / Stop>*" );
-                }
+                default -> messenger.sendMessage(player, BakedMessage.WRONG_ARGS, BakedMessage.COMMAND_USAGE);
             }
         }
         return true;
