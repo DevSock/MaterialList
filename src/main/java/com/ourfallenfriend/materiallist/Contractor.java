@@ -4,6 +4,8 @@ import com.ourfallenfriend.materiallist.http.AsyncHttpClientExchange;
 import com.ourfallenfriend.materiallist.messenger.BakedMessage;
 import com.ourfallenfriend.materiallist.messenger.MessageType;
 import com.ourfallenfriend.materiallist.messenger.Messenger;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -79,8 +81,10 @@ public class Contractor {
     public void completeContract(UUID agentID, String URL) {
         Player agent = Bukkit.getPlayer(agentID);
 
+        Component clickableURL = Component.text(URL).clickEvent(ClickEvent.openUrl(URL));
+
         messenger.sendMessage(agent, BakedMessage.CONTRACT_ENDED);
-        messenger.sendMessage(agent, MessageType.INFO, URL);
+        messenger.sendMessage(agent, MessageType.INFO, clickableURL);
         voidContract(agentID);
     }
 
