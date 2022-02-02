@@ -2,6 +2,7 @@ package com.ourfallenfriend.materiallist.http;
 
 import com.ourfallenfriend.materiallist.Contractor;
 import com.ourfallenfriend.materiallist.MaterialList;
+import com.ourfallenfriend.materiallist.messenger.BakedMessage;
 import com.ourfallenfriend.materiallist.messenger.MessageType;
 import com.ourfallenfriend.materiallist.messenger.Messenger;
 import org.bukkit.Bukkit;
@@ -47,7 +48,7 @@ public class AsyncHttpClientExchange {
                         Player player = Bukkit.getPlayer(responseReceiver);
                         if(Objects.isNull(player)) return;
 
-                        Messenger.dispatch(player, MessageType.WARN, "Couldn't connect to the external server. Please report this to your system administrator.");
+                        Messenger.getInstance().sendMessage(player, true, BakedMessage.SERVER_CONNECTION_FAILED);
                         Contractor.getInstance().voidContract(responseReceiver);
                     }
                 });
