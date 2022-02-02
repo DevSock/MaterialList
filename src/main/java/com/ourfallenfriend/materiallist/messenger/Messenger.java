@@ -3,6 +3,7 @@ package com.ourfallenfriend.materiallist.messenger;
 import com.ourfallenfriend.materiallist.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -31,7 +32,7 @@ public class Messenger {
     public void sendMessage(Player receiver, MessageType messageType, Boolean shouldLog, Component message){
         boolean wasSuccessful = dispatch(receiver, messageType, message);
         if(shouldLog) {
-            logger.log(Level.INFO, buildCompleteMessage(messageType, message).toString());
+            logger.log(Level.INFO, PlainTextComponentSerializer.plainText().serialize(buildCompleteMessage(messageType, message)));
             if(!wasSuccessful) {
                 logger.log(Level.WARNING, "Recipient of logged message was null, and message was not delivered.");
             }
